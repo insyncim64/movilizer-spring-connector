@@ -12,7 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.xml.datatype.DatatypeFactory;
@@ -29,7 +30,7 @@ import static org.hamcrest.Matchers.*;
  * @since 1.0
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {MovilizerV12TestConfig.class})
+@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT, classes=MovilizerV12TestConfig.class)
 public class MasterdataToMovilizerQueueServiceTest {
 
     @Autowired

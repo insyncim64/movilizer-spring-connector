@@ -3,9 +3,9 @@ package com.movilizer.connector;
 import com.movilizer.connector.MovilizerConnectorConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.boot.Banner.Mode;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.WebApplicationInitializer;
 
@@ -19,7 +19,7 @@ import javax.servlet.ServletException;
  */
 @SpringBootApplication
 @Import(MovilizerConnectorConfig.class)
-public class MovilizerConnectorApplication extends SpringBootServletInitializer implements WebApplicationInitializer {
+public class MovilizerConnectorApplication {
 
     private static Log logger = LogFactory.getLog(MovilizerConnectorApplication.class);
 
@@ -40,7 +40,7 @@ public class MovilizerConnectorApplication extends SpringBootServletInitializer 
          */
 
         SpringApplication app = new SpringApplication(MovilizerConnectorConfig.class);
-        app.setShowBanner(false);//app.setBannerMode(Banner.Mode.OFF);
+        app.setBannerMode(Mode.OFF);
         app.run(args);
     }
 }

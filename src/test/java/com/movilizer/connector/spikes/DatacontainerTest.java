@@ -15,7 +15,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.nio.file.Path;
@@ -32,8 +33,8 @@ import java.util.UUID;
  * @since 1.0
  */
 @RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes=MovilizerV12TestConfig.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-@SpringApplicationConfiguration(classes = {MovilizerV12TestConfig.class})
 public class DatacontainerTest {
 
     private final String moveletXmlPath = "/test-movelets/test-movelet-datacontainer-reply.mxml";
