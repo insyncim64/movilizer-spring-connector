@@ -41,6 +41,7 @@ public class GenericDataContainerMapperImpl implements GenericDataContainerMappe
             objectAsMap = getMap(containerData.getEntry());
             objectAsMap.remove(JAVA_CLASS_ENTRY);
         }
+        
         try {
             return new ObjectMapper().convertValue(objectAsMap, toValueType);
         } catch (IllegalArgumentException e) {
@@ -69,7 +70,7 @@ public class GenericDataContainerMapperImpl implements GenericDataContainerMappe
     @Override
     public String getTypeCanonicalName(MovilizerGenericDataContainer dataContainer) throws MovilizerParsingException {
         for (MovilizerGenericDataContainerEntry entry : dataContainer.getEntry()) {
-            if (entry.getName().equals(JAVA_CLASS_ENTRY)) {
+            if (JAVA_CLASS_ENTRY.equals(entry.getName())) {
                 return entry.getValstr();
             }
         }
