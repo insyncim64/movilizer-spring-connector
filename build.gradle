@@ -1,52 +1,39 @@
-/**
- * To run the application:
- * $ gradle bootRun
- *
- * TODO add maven profile functionality by calling a new variable to the call and evaluating
- * https://www.gradleware.com/tutorials/feature-spotlight-gradles-support-maven-pom-profiles/
- * http://www.coderanch.com/t/603665/tools/similar-Maven-profile-Gradle
- */
-// Base plugin for task rule clean<task>
-apply plugin: 'base'
 apply plugin: 'java'
+
 apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'war'
 
-group = 'com.movilizer.connector'
-version = '2.0'
+group = 'com.movilizer.ps'
+version = '0.1.0'
 
 springBoot {
     mainClass = 'com.movilizer.connector.MovilizerConnectorApplication'
 }
 
 buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE")
-    }
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE")
+	}
 }
 
 repositories {
-    mavenCentral()
-    mavenLocal()
-    // A single directory added to a custom-named repositories grouping.
-    flatDir name: 'localDiskRepo', dirs: 'lib'
+	jcenter()
+	mavenLocal()
+	maven {
+		credentials {
+			username="build"
+			password="Movilitas06"
+		}
+		url 'https://source.movilizer.com/artifactory/lighthouse/'
+	}
 }
-
-/**
- * This create the possibility for someone to hoockup with the application and debug.
- */
-//applicationDefaultJvmArgs = [
-//	"-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
-//]
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
 
 
 // New configuration for CXF dependencies.
@@ -56,14 +43,11 @@ configurations {
 }
 
 dependencies {
-    //This is abig boot setup
-    //compile("org.springframework.boot:spring-boot-starter-security")
-    //compile("org.springframework.boot:spring-boot-starter-aop")
+
     compile("org.springframework.boot:spring-boot-starter-web")
-    //compile("org.springframework.boot:spring-boot-starter-integration")
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
+//    compile('javax.xml.bind:jaxb-api:2.2.11') // Java 9 compatibility
     compile("org.springframework.boot:spring-boot-starter-data-rest")
-    compile("org.springframework.boot:spring-boot-starter-velocity")
     //compile("org.springframework.boot:spring-boot-starter-ws")
     //compile("org.springframework.boot:spring-boot-starter-remote-shell")
     compile("org.springframework.boot:spring-boot-starter-actuator")
@@ -80,18 +64,32 @@ dependencies {
     compile("org.jasypt:jasypt:1.9.0")
 
     //movilizer web service
-//    compile("com.movilizer.mds:movilizer-webservice:12.11.1.3")
-    compile("localDiskRepo:movilizer-webservice-15")
+    compile("com.movilizer.mds:movilizer-webservice:15.11.1.5")
+	{
+	  //exclude module: 'jaxb-impl'
+	}
 
     compile("org.apache.httpcomponents:httpclient:4.4")
     compile("org.apache.httpcomponents:httpmime:4.4")
     compile("org.apache.httpcomponents:fluent-hc:4.4")
     compile("org.apache.cxf:cxf-core:3.1.1")
     compile("org.apache.cxf:cxf-rt-frontend-jaxws:3.1.1")
+	{
+	  exclude module: 'jaxb-impl'
+	}
     compile("org.apache.cxf:cxf-rt-transports-http:3.1.1")
 
 	//This is needed to use yaml properties
 	compile("org.yaml:snakeyaml:1.8")
+
+	compile ('org.apache.poi:poi:3.16')
+	{
+	  //exclude module: 'jaxb-impl'
+	}
+    compile('org.apache.poi:poi-ooxml:3.16')
+	{
+	  //exclude module: 'jaxb-impl'
+	}
 
     testCompile("org.springframework.boot:spring-boot-starter-test")
 
@@ -99,20 +97,30 @@ dependencies {
 
 }
 
-//eclipse {
-//    classpath {
-// in the moment you will have to add the generated classes folder manually to the eclipse src directories
-// http://stackoverflow.com/questions/26750869/how-to-add-gradle-generated-source-folder-to-eclipse-project
-//		file.whenMerged { cp ->
-//			cp.entries.add(new org.gradle.plugins.ide.eclipse.model.SourceFolder(wsdlGeneratedFiles, null)
-//		}
-//        containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
-//        containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
-//    }
-//}
-
 task wrapper(type: Wrapper) {
     gradleVersion = '4.3'
 }
 
-
+//jar {
+//    // Keep jar clean:
+//    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
+//    manifest {
+//        attributes 'Main-Class':'com.movilizer.reliance.main.MainApplication'
+////        'Class-Path': sourceSets.main.runtimeClasspath
+//        }
+//       from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+//
+//}
+//
+//
+////create a single Jar with all dependencies
+//task fatJar(type: Jar) {
+//    manifest {
+//        attributes 'Implementation-Title': 'RelianceConnector',
+//                'Implementation-Version': version,
+//                'Main-Class': 'com.movilizer.reliance.main.MainApplication'
+//    }
+//    baseName = project.name + ' -all'
+////    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+//    with jar
+//}

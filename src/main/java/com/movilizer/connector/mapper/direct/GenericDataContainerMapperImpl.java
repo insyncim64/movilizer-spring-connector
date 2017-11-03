@@ -54,7 +54,7 @@ public class GenericDataContainerMapperImpl implements GenericDataContainerMappe
     public <T> boolean isType(MovilizerGenericDataContainer dataContainer, Class<T> objectType) throws MovilizerParsingException {
         boolean isType = false;
         String className = getTypeCanonicalName(dataContainer);
-        if (objectType.getName().equals(className)) {
+        if (objectType.getName().contains(className)) {
             isType = true;
         }
         return isType;
