@@ -10,6 +10,9 @@ import com.movilizer.connector.jobs.processors.DownloadProcessor;
 import com.movilizer.connector.jobs.processors.UploadProcessor;
 
 import com.movilizer.mds.webservice.services.MovilizerDistributionService;
+import com.movilizer.mds.webservice.services.MovilizerXMLParserService;
+import com.movilizer.mds.webservice.services.MovilizerXMLParserServiceImpl;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +21,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -44,7 +49,7 @@ public class PollingJob {
     private MovilizerRequest currentRequest;
     private Calendar lastSync;
     private List<MovilizerCallback> callbacks;
-
+    private MovilizerXMLParserService service;
     @Autowired
     public PollingJob(MovilizerDistributionService movilizer, DownloadProcessor dataProcessor,
                       ErrorsProcessor errorsProcessor, UploadProcessor uploadProcessor) {
@@ -53,6 +58,7 @@ public class PollingJob {
         this.errorsProcessor = errorsProcessor;
         this.uploadProcessor = uploadProcessor;
         callbacks = new ArrayList<>();
+        this.service = new MovilizerXMLParserServiceImpl(Charset.defaultCharset());
     }
 
     @PostConstruct
@@ -69,6 +75,8 @@ public class PollingJob {
         //Perform task to gather the data to send to the cloud first (movelets, assignment, masterdata)
         uploadProcessor.process(currentRequest);
         lastResponse = movilizer.getReplyFromCloudSync(currentRequest);
+        String responseString = this.service.printResponse(lastResponse);
+        logger.info(responseString);
         lastSync = Calendar.getInstance();
         generateCleanRequest();
         errorsProcessor.process(lastResponse);
